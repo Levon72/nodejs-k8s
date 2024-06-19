@@ -1,0 +1,31 @@
+# Указываем образ, который будет использоваться для выполнения задач в GitLab CI/CD
+image: docker:latest
+
+# Определяем переменные окружения, которые могут потребоваться
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+# Определяем стадии и задачи
+stages:
+  - build
+  - deploy
+
+# Определяем задачу сборки Docker образа
+build_image:
+  stage: build
+  script:
+    - docker build -t my-node-app .
+    - docker tag my-node-app:latest mydockerhubusername/my-node-app:latest
+  only:
+    - master  # Запускать задачу только при коммитах в ветку master
+
+# Определяем задачу публикации Docker образа в Docker Hub
+publish_image:
+  stage: deploy
+  script:
+    - docker login -u levon72 -p 3450dAAA!
+    - docker push levon72/nodejs-server:latest
+  only:
+    - master  # Запускать задачу только при коммитах в ветку master
+
