@@ -55,8 +55,9 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
+            echo "Pulling the latest version of the Docker Compose file"
             TAG=${{ github.ref_name }}
             export TAG
+            echo "Current TAG: $TAG"
             docker-compose pull app
             docker-compose up -d
-
