@@ -30,6 +30,14 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/nodejs_server:latest
 
+  deploy:
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Update docker-compose and deploy
         run: |
           cd ~/Simple-NodeJS-Server
