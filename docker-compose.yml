@@ -11,11 +11,10 @@ services:
       - app
 
   app:
-    image: levon72/nodejs-server:v1.0.5
+    image: levon72/nodejs-server:latest
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
     volumes:
       - .:/usr/src/app
-
