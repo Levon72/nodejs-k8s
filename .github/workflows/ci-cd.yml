@@ -24,6 +24,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
+        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -35,6 +36,18 @@ jobs:
     needs: build
 
     steps:
+      - name: Wait for Docker image to be available
+        id: wait_for_image
+        run: |
+          timeout=300
+          while [ $timeout -gt 0 ]; do
+            docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs_server:latest && exit 0
+            sleep 10
+            timeout=$((timeout - 10))
+          done
+          echo "Timed out waiting for Docker image"
+          exit 1
+
       - name: Checkout code
         uses: actions/checkout@v2
 
