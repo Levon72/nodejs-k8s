@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     tags:
-      - 'v*'  # Реагировать на пуш тегов, начинающихся с 'v'
+      - 'v*'
 
 jobs:
   build_and_deploy:
