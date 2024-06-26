@@ -11,7 +11,7 @@ services:
       - app
 
   app:
-    image: levon72/nodejs-server:${NODEJS_SERVER_TAG}
+    image: levon72/nodejs_server:${TAG:-latest}  # Используем переменную TAG для указания тега
     ports:
       - "3000:3000"
     environment:

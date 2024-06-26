@@ -9,9 +9,6 @@ jobs:
   build_and_deploy:
     runs-on: self-hosted
 
-    env:
-      NODEJS_SERVER_TAG: ${{ github.ref }}  # Используем тег GitHub референса (например, v1.0.18)
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -26,16 +23,21 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/nodejs_server:${NODEJS_SERVER_TAG}  # Вот здесь используем переменную окружения
+          tags: ${{ secrets.DOCKER_USERNAME }}/nodejs_server:${{ github.ref_name }}
 
-      - name: Update docker-compose and deploy
+      - name: Update Docker tag in docker-compose.yml
         run: |
-          sed -i "s|image: .*/nodejs_server:.*|image: '${{ secrets.DOCKER_USERNAME }}/nodejs_server:${NODEJS_SERVER_TAG}}'|" docker-compose.yml
-          docker-compose pull
+          cd /home/stas/Simple-NodeJS-Server
+          TAG=${{ github.ref_name }}
+          sed -i "s|\${TAG:-latest}|$TAG|g" docker-compose.yml
+
+      - name: Pull and redeploy Docker containers
+        run: |
+          cd /home/stas/Simple-NodeJS-Server
+          docker-compose pull app
           docker-compose up -d
 
