@@ -1,6 +1,15 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
 jobs:
-  build:
+  build-and-deploy:
     runs-on: self-hosted
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -20,11 +29,11 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/nodejs_server:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/nodejs_server:${{ github.ref }}
 
       - name: Set Docker tag in docker-compose.yml
         run: |
-          TAG=$(git describe --tags --abbrev=0)
+          TAG=$(echo "${{ github.ref }}" | sed 's|refs/tags/||')
           sed -i "s|image: .*/nodejs_server:.*|image: '${{ secrets.DOCKER_USERNAME }}/nodejs_server:${TAG}}'|" docker-compose.yml
 
       - name: Deploy using docker-compose
