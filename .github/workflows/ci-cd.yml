@@ -39,6 +39,7 @@ jobs:
 
       - name: Pull and redeploy Docker containers
         run: |
+          echo "$GITHUB_REF_NAME"
           cd /home/stas/Simple-NodeJS-Server
           docker-compose pull app
           docker-compose up -d
