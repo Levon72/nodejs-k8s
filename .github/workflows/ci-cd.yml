@@ -35,7 +35,8 @@ jobs:
       - name: Update Docker tag in docker-compose.yml
         run: |
           cd /home/stas/Simple-NodeJS-Server
-          echo "GITHUB_REF_NAME=${{ github.ref_name }}" >> .env
+          echo "GITHUB_REF_NAME=${GITHUB_REF_NAME}" >> .env
+#          echo "GITHUB_REF_NAME=${{ github.ref_name }}" >> .env
 
       - name: Pull and redeploy Docker containers
         run: |
