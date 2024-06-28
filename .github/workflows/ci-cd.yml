@@ -10,6 +10,9 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Check env
+        uses: env
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -32,6 +35,7 @@ jobs:
       - name: Update Docker tag in docker-compose.yml
         run: |
           cd /home/stas/Simple-NodeJS-Server
+          cp docker-compose.yml docker-compose.yml.backup
           TAG=${{ github.ref_name }}
           sed -i "s|\${TAG:-latest}|$TAG|g" docker-compose.yml
 
@@ -40,4 +44,6 @@ jobs:
           cd /home/stas/Simple-NodeJS-Server
           docker-compose pull app
           docker-compose up -d
+          cp docker-compose.yml.backup docker-compose.yml
+          rm docker-compose.yml.backup
 
