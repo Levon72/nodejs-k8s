@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: arc-runner-set
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -54,7 +54,7 @@ jobs:
           tags: ${{ env.DOCKER_IMAGE }}:${{ github.ref_name }}
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: arc-runner-set
     needs: build
     steps:
       - name: Checkout code
