@@ -13,21 +13,29 @@ env:
 
 jobs:
   build:
-    runs-on: arc-runner-set
-    container:
-      image: docker:latest
-      options: --privileged
-    services:
-      docker:
-        image: docker:20.10.7-dind
-        privileged: true
-        options: >
-          --privileged
-          --tmpfs /run
-          --tmpfs /var/lib/docker
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Install Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+
+      - name: Start Docker Daemon
+        run: |
+          echo "Starting Docker Daemon..."
+          sudo dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 &
+          DOCKER_PID=$!
+          echo "Docker Daemon PID: $DOCKER_PID"
+          sleep 20 # Даем Docker достаточно времени для запуска
+
+          echo "Checking Docker Daemon status..."
+          docker info || echo "Docker Daemon not responding"
+
+          echo "Docker Daemon logs:"
+          sudo tail -n 50 /var/log/docker.log || echo "No Docker logs found or Docker not started"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -45,9 +53,8 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_IMAGE }}:${{ github.ref_name }}
 
-
   deploy:
-    runs-on: arc-runner-set
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Checkout code
