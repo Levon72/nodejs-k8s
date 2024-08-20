@@ -1,0 +1,27 @@
+# This is a YAML-formatted file.
+
+image: levon72/nodejs_server
+imageTag: v1.0.34
+imagePullSecret: nodejs-k8s-gitlab-registry
+
+replicas: 3
+
+resources:
+  limits:
+    cpu: 400m
+    memory: 256Mi
+  requests:
+    cpu: 400m
+    memory: 256Mi
+
+service:
+  port: 80
+
+ingress:
+  host: nodejs-k8s.example.com
+  className: nginx
+  path: /
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
+
