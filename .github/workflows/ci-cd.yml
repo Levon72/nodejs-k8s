@@ -25,12 +25,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-
-      - name: Start Docker Daemon
+      # Step to set up Docker-in-Docker (DinD)
+      - name: Set up Docker-in-Docker
         run: |
           sudo dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 &
           sleep 10
