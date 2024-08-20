@@ -12,24 +12,22 @@ env:
   DOCKER_IMAGE: "levon72/nodejs_server"
 
 jobs:
-  lint:
-    runs-on: arc-runner-set
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
   build:
     runs-on: arc-runner-set
-    needs: lint
+    container:
+      image: docker:latest
+      options: --privileged
+    services:
+      docker:
+        image: docker:20.10.7-dind
+        privileged: true
+        options: >
+          --privileged
+          --tmpfs /run
+          --tmpfs /var/lib/docker
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      # Step to set up Docker-in-Docker (DinD)
-      - name: Set up Docker-in-Docker
-        run: |
-          sudo dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 &
-          sleep 10
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -46,6 +44,7 @@ jobs:
           context: .
           push: true
           tags: ${{ env.DOCKER_IMAGE }}:${{ github.ref_name }}
+
 
   deploy:
     runs-on: arc-runner-set
