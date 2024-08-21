@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    runs-on: arc-runner-set
+    runs-on: ubuntu-20-04-dind
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -70,7 +70,7 @@ jobs:
           tags: ${{ env.DOCKER_IMAGE }}:${{ github.ref_name }}
 
   deploy:
-    runs-on: arc-runner-set
+    runs-on: ubuntu-20-04-dind
     needs: build
     steps:
       - name: Checkout code
