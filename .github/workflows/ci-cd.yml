@@ -18,7 +18,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Docker
+      - name: Check system info
+        run: |
+          echo "=== System Info ==="
+          uname -a
+          echo "=== OS Release ==="
+          cat /etc/os-release
+          echo "=== Installed Packages ==="
+          dpkg -l || rpm -qa
+
+      - name: Check Docker version
+        run: |
+          echo "=== Docker Version ==="
+          docker --version
+          echo "=== Docker Info ==="
+          docker info
+
+      - name: Install Docker (if needed)
         run: |
           sudo apt-get update
           sudo apt-get install -y docker.io
