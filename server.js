@@ -3,7 +3,7 @@ const port = 3000;
 
 const app = express();
 app.get('/', (req, res) => {
-    res.send('AFFFFFFFFFFFFFFfFF Simple Node.js Server is Up and Running.......test {{ github.ref_name }}   GITHUB_REF_NAME')
+    res.send('Simple Node.js Server on k8s is Up and Running')
 })
 app.listen(port, ()=>{
     console.log(`Server is listening on port ${port}`)
