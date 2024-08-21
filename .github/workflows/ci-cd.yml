@@ -24,8 +24,6 @@ jobs:
           uname -a
           echo "=== OS Release ==="
           cat /etc/os-release
-          echo "=== Installed Packages ==="
-          dpkg -l || rpm -qa
 
       - name: Check Docker version
         run: |
@@ -33,25 +31,6 @@ jobs:
           docker --version
           echo "=== Docker Info ==="
           docker info
-
-      - name: Install Docker (if needed)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-
-      - name: Start Docker Daemon
-        run: |
-          echo "Starting Docker Daemon..."
-          sudo dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 &
-          DOCKER_PID=$!
-          echo "Docker Daemon PID: $DOCKER_PID"
-          sleep 20 # Даем Docker достаточно времени для запуска
-
-          echo "Checking Docker Daemon status..."
-          docker info || echo "Docker Daemon not responding"
-
-          echo "Docker Daemon logs:"
-          sudo tail -n 50 /var/log/docker.log || echo "No Docker logs found or Docker not started"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
