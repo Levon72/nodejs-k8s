@@ -65,6 +65,7 @@ jobs:
         run: |
           helm upgrade --install ${{ env.CHART_NAME }} .helm \
             --namespace ${{ env.KUBE_NAMESPACE }} \
+            --create-namespace \
             --set image=${{ env.DOCKER_IMAGE }} \
             --set imageTag=${{ github.ref_name }} \
             --set imagePullSecrets[0].name=nodejs-k8s-gitlab-registry \
